@@ -5,7 +5,7 @@ module.exports = function (sequalize, DataTypes) {
         //password: DataTypes.STRING,
         email: DataTypes.STRING,
         description: DataTypes.STRING,
-        //picture: DataTypes.BLOB,
+        picture: DataTypes.STRING,
         estAmount: DataTypes.INTEGER
     });
     return families;

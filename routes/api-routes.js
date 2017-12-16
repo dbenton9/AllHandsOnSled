@@ -1,4 +1,6 @@
 var db = require("../public/models");
+var multiparty = require('multiparty');
+var cloudinary = require('cloudinary');
 
 // Routes
 // =============================================================
@@ -14,17 +16,37 @@ module.exports = function(app) {
 
   // POST route for saving a new post
   app.post("/api/families", function(req, res) {
-    console.log(req.body);
-    db.families.create({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        description: req.body.description,
-        estAmount: req.body.estAmount
-    })
-    .then(function(dbfamilies) {
-      res.json(dbfamilies);
+
+    var form = new multiparty.Form();
+
+    form.parse(req, function(err, fields, files) {
+
+      cloudinary.config({
+        cloud_name: 'dehuuhaib',
+        api_key: '852647781625234',
+        api_secret: 'DWfHbtqiJhXCwAG8DGCHEKzosWA'
+      });
+
+      cloudinary.uploader.upload(files.picture[0].path, function(result) {
+        console.log(result)
+
+        db.families.create({
+          firstName: fields.firstName[0],
+          lastName: fields.lastName[0],
+          email: fields.email[0],
+          description: fields.description[0],
+          estAmount: fields.estAmount[0],
+          picture: result.secure_url
+        })
+        .then(function(dbfamilies) {
+          res.json(dbfamilies);
+        });
+
+      });
+
+
     });
+
   });
 
   // PUT route for updating posts

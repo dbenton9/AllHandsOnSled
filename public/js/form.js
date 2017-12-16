@@ -18,50 +18,33 @@ $(document).ready(function () {
         if (!fnInput.val().trim() || !lnInput.val().trim() || !emailInput.val().trim() || !descriptionInput.val().trim() || !amountInput.val().trim()) {
             return;
         }
+
+        var fd = new FormData();
+
+        fd.append('firstName', fnInput.val().trim());
+        fd.append('lastName', lnInput.val().trim());
+        fd.append('email', emailInput.val().trim());
+        fd.append('description', descriptionInput.val().trim());
+        fd.append('estAmount', amountInput.val().trim());
+        fd.append('picture', $("#familyPicture")[0].files[0]);
+
         // Constructing a newPost object to hand to the database
-        var newFamilies = {
-            firstName: fnInput.val().trim(),
-            lastName: lnInput.val().trim(),
-            email: emailInput.val().trim(),
-            description: descriptionInput.val().trim(),
-            estAmount: amountInput.val().trim()
-        };
-
-        console.log(newFamilies);
-
-        submitFamilies(newFamilies);
-
-
-    })
-
-    function submitFamilies(families) {
-
+        
         $.ajax({
             url: "/api/families",
             method: "POST",
-            data: families
-        }).done(function() {
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: 'json'
+        }).done(function(data) {
 
-            updateFamilies(families);
+            console.log('SERVER RESPONSE', data);
+            window.location.href = "/all";
 
         })
 
-    }
 
-        //$.post("/api/families", families, function() {
-           // window.location.href = "/all";
-          //});
-
-    
-
-    function updateFamilies(families) {
-        $.ajax({
-            method: "PUT",
-            url:"/api/families",
-            data: families
-        }).done(function() {
-            window.location.href = "/all";
-        });
-    }
+    });
 
 });
